@@ -1,11 +1,45 @@
+<link rel="stylesheet" href="/css/home.css">
 
-<body>
+<h1>Track Habits for a better lifestyle</h1>
 
-    
-    
-    <h1>Codeia/ <%= title%></h1>
+        <div id="search-div">
+            
+            <form action="/habits/createHabit" method="post" id="type-form">
+                <input type="text" id="custom_meal" name="custom_meal" placeholder="Type any custom meal to add" required>
+                <button type="submit" id="add-custom-meal">Add Custom Habit</button>
+            </form>
+            <button type="button" id="weekly-view"><a href="/habits/weeklyView">Show Weekly View</a></button>
+        </div>
+        <div id="habits-div">
+            <%for(let habit of habits){%>
+                <div id="user-habits">
 
-    
-</body>
+                    <%for(let habitstatus of habit.status){%>
+                            <%if(habitstatus.date==currdate){%>
+                                <%var status=habitstatus.datestatus%>
+                            <%break}}%>
+                    
+                    <h4><%=habit.name%></h4>
+                    <select name="habit-status" class="habit-status-dropdown" id=<%=habit._id%>>
 
 
+                        <option value="Not Started" <% if (status === "Not Started") { %>selected<% } %>>Not Started</option>
+                        <option value="Done" <% if (status === "Done") { %>selected<% } %>>Done</option>
+                        <option value="Not Done" <% if (status === "Not Done") { %>selected<% } %>>Not Done</option>
+                        
+                    </select>
+                    <button type="button" id="<%=habit._id%>"><a href="/habits/deleteHabit/<%=habit._id%>">Delete Habit</a></button>
+                </div>
+            <%}%>
+
+        </div>
+            
+
+        <script src="/js/home.js"></script>
+          
+          
+          
+          
+          
+          
+          
