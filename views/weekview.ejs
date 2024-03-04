@@ -1,0 +1,30 @@
+<link rel="stylesheet" href="/css/weekview.css">
+
+<div id="header-div">
+    <h1>Habits develop into character</h1>
+    <button type="button" id="daily-view"><a href="/habits/dailyView">Show Daily View</a></button>
+</div>
+   
+
+<div id="habits-div">
+    <%for(let habit of habits){%>
+    <div id="user-habits">
+        <h4><%=habit.name%></h4>
+        <%for(let habitstatus of habit.status){%>
+            <div>
+                <p><%=habitstatus.datestring%></p>
+
+                <%var status = habitstatus.habitstatus %>
+
+
+                <input type="radio" class="radio-button" data-habitid = "<%= habit._id%>" data-date = "<%= habitstatus.datestring%>" id="html" name="fav_language_<%= habitstatus._id%>" value="Done" <% if (status === "Done") { %>checked<% } %> >
+                <label for="html">Done</label><br>
+                <input type="radio" class="radio-button" data-habitid = "<%= habit._id%>"  data-date = "<%= habitstatus.datestring%>" id="css" name="fav_language_<%= habitstatus._id%>" value="Not Done" <% if (status === "Not Done") { %>checked<% } %> >
+                <label for="css">Not Done</label><br>
+            </div>
+            <%}%>
+    </div>
+    <%}%>
+    </div>
+
+    <script src="/js/week.js"></script>

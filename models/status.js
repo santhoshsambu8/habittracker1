@@ -6,6 +6,10 @@ const statusSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    datestring:{
+        type: String,
+        required: true
+    },
 
     habitstatus:{
         type: String,

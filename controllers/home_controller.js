@@ -1,4 +1,4 @@
-const Habits = require('../models/habits');
+const Habits = require('../models/habit');
 const Status = require('../models/status');
 
 
@@ -18,11 +18,17 @@ function formatDate(date) {
 
         let habits = await Habits.find({}).populate({
             path: 'status',
-            options: { sort: { date: -1 }, limit: 1 } // Sorting by createdAt in descending order to get the latest record
+            // Sorting by createdAt in descending order to get the latest record
           });
 
+        //   let habits = await Habits.find({}).populate({path:'status'});
+
+
+       
           const today = new Date();
           let date  = formatDate(today);
+
+        //   console.log(habits[0].status[0].date.split('-')[2]);
 
         res.render('./home',{
             habits:habits,
@@ -44,6 +50,7 @@ module.exports.create=async function(req,res)
 {
     try {
 
+        console.log(req.body);
         let nameValue = (req.body.custom_meal);
 
         let habit = await Habits.findOne({ name: nameValue });
@@ -58,24 +65,22 @@ module.exports.create=async function(req,res)
         })
 
         const today = new Date();
-        for (let i = 0; i < 7; i++) {
-
-            let previousDate = new Date();
-            previousDate.setDate(today.getDate() - i);
             
             let date= await Status.create(
                 {
-                    date:formatDate(previousDate),
+                    date:formatDate(today),
+                    datestring: formatDate(today),
                     habitstatus:'None',
                     habitid:habit._id
                 }
             )
 
             habit.status.push(date);
-            habit.save();
+            
 
 
-        }
+        // }
+        habit.save();
 
         return res.redirect('back');
 
@@ -86,4 +91,60 @@ module.exports.create=async function(req,res)
         console.log('Error', error);
     }
     
+}
+
+
+module.exports.toggleStatus = async function(req,res)
+{
+    try {   
+
+          let habit = await Habits.findOne({ _id: req.query.id });
+          let status = await Status.findOne({habitid:req.query.id,date:formatDate(new Date())});
+
+          if (status == null){
+
+            let date= await Status.create(
+                            {
+                                date:formatDate(new Date()),
+                                habitstatus:req.query.status,
+                                habitid:req.query.id
+                            }
+                        )
+            
+            habit.status.push(date);
+
+
+          }
+
+          else{
+
+            status.habitstatus=req.query.status;
+            status.save();
+
+          }
+
+
+        return res.redirect('back');
+
+    } 
+    
+    catch (error) {
+        console.log('Error', error);
+    }
+    
+}
+
+module.exports.delete=async function(req,res)
+{
+    try {
+
+        await Habits.deleteOne({_id: req.params.id});
+
+        await Status.deleteMany({habitid:req.params.id});
+
+        return res.redirect('back')
+        
+    } catch (error) {
+        console.log('Error', error);
+    }
 }
